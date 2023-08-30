@@ -1,45 +1,42 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.18;
 
-contract ExceptionExample {
+// require, revert and assert
+contract Metacrafters {
+// public variable
+    string public  TOKEN_NAME = "Metacrafters";
+    string public  TOKEN_ABBRV = "MTC";
+    uint256 public totalSupply;
     address public owner;
-    uint256 public value;
 
-    constructor() {
-        owner = msg.sender;
+constructor() {
+    owner = msg.sender;
+}
+    // mapping variable here
+    mapping(address => uint256) public balanceOf;
+
+    // mint function
+    function mint(uint256 _value) public {
+        require(_value > 0, "value must be greater than 0");
+        uint256 oldTotalSupply = totalSupply;
+        assert((totalSupply + _value) > oldTotalSupply );
+        totalSupply += _value;
+        balanceOf[msg.sender] += _value;
     }
 
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Only the owner can call this function");
-        _;
+    // burn function
+    function burn(uint256 _value) public {
+        require(msg.sender == owner, "Only owner can call this function");
+           totalSupply -= _value;
+            balanceOf[msg.sender] -= _value;
+
     }
 
-    function setValue(uint256 _newValue) public onlyOwner {
-        // Use require() to validate inputs
-        require(_newValue > 0, "Value must be greater than 0");
-        value = _newValue;
-    }
+    function checkTotalSupply() public view returns( bool){
+             if(totalSupply < 1000) {
+                revert("Total supply cannot be less than a thousand");
+            }
 
-    function assertExample(uint _checker) public pure returns (uint256) {
-        uint256 x = 1;
-        uint256 y = _checker;
-
-        // Use assert() to check internal errors
-        assert(x == y); 
-
-
-        return x;
-    }
-
-    function revertExample(uint _divisor) public pure returns (uint256) {
-        uint256 a = 10;
-        uint256 b = _divisor;
-
-        // Use revert() to explicitly revert the transaction
-        if (b == 0) {
-            revert("Division by zero is not allowed");
-        }
-
-        return a / b;
+            return true;
     }
 }
