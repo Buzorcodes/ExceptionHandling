@@ -1,29 +1,23 @@
 
-# Metacrafters Token Contract
+# MetaBank Smart Contract
 
 ## Overview
 
-The Metacrafters Token (MTC) contract is designed to create and manage a basic fungible token on the Ethereum blockchain. It includes the following features:
+The MetaBank smart contract provides fundamental banking functionalities, including:
 
--   Token Name: "Metacrafters"
--   Token Symbol: "MTC"
--   Minting: Token owners can mint new tokens.
--   Burning: Token owners can burn (destroy) their own tokens.
--   Total Supply: Tracks the total supply of MTC tokens.
--   Ownership: The contract owner can perform administrative functions such as burning tokens.
+-   Minting: The contract owner can mint new tokens.
+-   Transferring: Token holders can transfer tokens to other addresses.
+-   Burning: Token holders can burn (destroy) their own tokens.
+-   Account Balances: The contract keeps track of account balances.
+-   Ownership: The contract owner has special privileges for minting tokens.
 
 ## Smart Contract Details
 
-### SPDX License Identifier
-
-This contract is licensed under the MIT License. You can find the license details at the top of the contract file.
-
 ### State Variables
 
--   `TOKEN_NAME`: A public string variable representing the name of the token, which is "Metacrafters."
--   `TOKEN_ABBRV`: A public string variable representing the token abbreviation, which is "MTC."
--   `totalSupply`: A public unsigned integer variable that keeps track of the total supply of MTC tokens.
 -   `owner`: An address variable representing the owner of the contract.
+-   `bankBalance`: A public unsigned integer variable representing the total balance held by the contract.
+-   `balanceOf`: A mapping that associates addresses with their token balances.
 
 ### Constructor
 
@@ -31,27 +25,29 @@ The contract constructor initializes the `owner` variable with the address of th
 
 ### Functions
 
-1.  `mint(uint256 _value)`: This function allows users to mint new MTC tokens. It requires that the value to be minted is greater than 0. After successful minting, the total supply and the balance of the caller are updated.
+1.  `mintToken(uint256 _value)`: This function allows the contract owner to mint new tokens. It requires that the caller is the owner of the contract. After successful minting, the balance of the owner and the total bank balance are updated.
     
-2.  `burn(uint256 _value)`: Token owners can use this function to burn (destroy) their own tokens. It checks if the caller is the owner of the contract before allowing the burn operation. If the conditions are met, the total supply and the balance of the caller are updated accordingly.
+2.  `transferToken(address _receiver, uint256 _value)`: Token holders can use this function to transfer tokens to another address. It checks if the caller's balance is sufficient to perform the transfer and updates the balances accordingly.
     
-3.  `checkTotalSupply()`: A view function that checks if the total supply of MTC tokens is less than 1000. If the total supply is less than 1000, it reverts with an error message; otherwise, it returns `true`.
+3.  `burnToken(uint256 _value)`: Token holders can use this function to burn (destroy) their own tokens. It checks if the caller's balance is sufficient for the burn operation and updates the balances accordingly. The total bank balance is also reduced.
     
 
 ## Usage
 
-To deploy this contract and interact with it, you will need a development environment for Ethereum smart contracts, such as Remix or Truffle. You can deploy the contract to an Ethereum testnet or the mainnet.
+To deploy and interact with this contract, you will need a development environment for Ethereum smart contracts, such as Remix or Truffle. You can deploy the contract to an Ethereum testnet or the mainnet.
 
 ### Deployment
 
 1.  Deploy the contract to an Ethereum network.
-2.  After deployment, the contract owner can mint and burn tokens as needed.
-3.  Users can check the total supply of tokens using the `checkTotalSupply()` function.
+2.  After deployment, the contract owner can mint tokens using the `mintToken` function.
+3.  Users can transfer tokens between addresses using the `transferToken` function.
+4.  Token holders can burn their tokens using the `burnToken` function.
 
 ### Security Considerations
 
--   Be cautious when using the `burn` function, as it can permanently destroy tokens, and only the contract owner can use it.
--   Ensure that the contract owner address is set correctly during deployment to prevent unauthorized access to administrative functions.
+-   Ensure that the contract owner address is set correctly during deployment to prevent unauthorized minting of tokens.
+-   Users should be cautious about transferring tokens to ensure they have a sufficient balance.
+-   Burning tokens reduces the total supply, so users should use the `burnToken` function judiciously.
 
 ## License
 
